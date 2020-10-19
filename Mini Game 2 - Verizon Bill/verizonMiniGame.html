@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://bossanova.uk/jexcel/v4/jexcel.js"></script>
+    <link rel="stylesheet" href="https://bossanova.uk/jexcel/v4/jexcel.css" type="text/css" />
+
+    <script src="https://bossanova.uk/jsuites/v3/jsuites.js"></script>
+    <link rel="stylesheet" href="https://bossanova.uk/jsuites/v3/jsuites.css" type="text/css" />
+
+
+    <header>
+        <br>
+        <h3>Verizon Bill Journal Entry Creation</h3>
+        <h5>FE Digital Camp - Mini Game 2</h5>
+        <br>
+        <h6>Problem Statement</h6>
+        <p>Your client's AP department has an extremely manual process for entering in their invoice journal for a phone
+            bill each month. They have asked if there is a way to automate the creation of the journal entry for easy
+            input into their ERP which allows for excel journal imports. </p>
+        <title>FE Digital Camp - Mini Game 2</title>
+
+        <hr>
+    </header>
+</head>
+
+<body class='container-fluid'>
+    <h5><div class="col-sm-6 offset-sm-6" id="timer"></div></h5>
+    <div id='spreadsheet'></div>
+    <br>
+    <br>
+    <input type="button" class="btn btn-primary col-sm-2" onclick="createTable()" value="Download Data">
+    <input type="button" class="btn btn-success col-sm-2" onclick="checkAnswer()" value="Check Answer">
+    <h2><span class='col-md-5 offset-md-5' id="result"></span></h2>
+
+
+
+
+    <script src="verizonLogic.js" charset="utf-8" type="text/javascript"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+    </script>
+    <script src="https://unpkg.com/papaparse@latest/papaparse.min.js"></script>
+</body>
+
+</html>
