@@ -3,10 +3,10 @@ var charges = generateCharges();
 var elements = []; //creating array to store each element in an object
 var answer = []; //creating array to store the correct answer
 var combos = [];
-var totalItems = [];
+var totalItems = generateTotalCharges(charges);
 var gameHasStarted = false; //set to false before the game begins 
 var dataGenerated = false;
-var totalScore = 0;
+var total = 0;
 var roundNum = 1;
 var correctAnswer = false;
 //generate unique date in 2020
@@ -28,111 +28,138 @@ var accounts = ['511040-760-6700', '511040-761-6700', '511040-761-4200', '511040
 
 var employeeMapping = [{
       'number': '229-999-6781',
-      'name': 'Suzy Q'
+      'name': 'Suzy Q',
+      'account': '511040-760-6700'
    },
    {
       'number': '229-999-9091',
-      'name': 'Tracy Smith'
+      'name': 'Tracy Smith',
+      'account': '511040-760-6700'
    },
    {
       'number': '229-999-3129',
-      'name': 'Kristen Bay'
+      'name': 'Kristen Bay',
+      'account': '511040-760-6700'
    },
    {
       'number': '229-999-0010',
-      'name': 'EAP Phone'
+      'name': 'EAP Phone',
+      'account': '511040-760-6700'
    },
    {
       'number': '904-999-6211',
-      'name': 'Admin Phone'
+      'name': 'Admin Phone',
+      'account': '511040-760-6700'
    },
    {
       'number': '229-999-4612',
-      'name': 'Warby Parker'
+      'name': 'Warby Parker',
+      'account': '511040-761-6700'
    },
    {
       'number': '904-999-3356',
-      'name': 'Jack Black'
+      'name': 'Jack Black',
+      'account': '511040-761-6700'
    },
    {
       'number': '904-999-5500',
-      'name': 'Jack Black - Ipad'
+      'name': 'Jack Black - Ipad',
+      'account': '511040-761-4200'
    },
    {
       'number': '229-999-4183',
-      'name': 'Sandy Wilson'
+      'name': 'Sandy Wilson',
+      'account': '511040-761-4200'
    },
    {
       'number': '229-999-1656',
-      'name': 'Rodney Chen'
+      'name': 'Rodney Chen',
+      'account': '511040-761-4200'
    },
    {
       'number': '229-999-1873',
-      'name': 'Doug Finn'
+      'name': 'Doug Finn',
+      'account': '511040-761-4200'
    },
    {
       'number': '229-999-0177',
-      'name': 'Sheldon Howey'
+      'name': 'Sheldon Howey',
+      'account': '511040-761-3 500'
    },
    {
       'number': '908-999-9052',
-      'name': 'Troy Whalen - Ipad'
+      'name': 'Troy Whalen - Ipad',
+      'account': '511040-761-3 500'
    },
    {
       'number': '229-999-1868',
-      'name': 'Suzy Q - Ipad'
+      'name': 'Suzy Q - Ipad',
+      'account': '511040-761-3 500'
    },
    {
       'number': '229-999-7336',
-      'name': 'Mike Hollow'
+      'name': 'Mike Hollow',
+      'account': '511040-761-3 500'
    },
    {
       'number': '706-999-2618',
-      'name': 'Clint Easton'
+      'name': 'Clint Easton',
+      'account': '511040-761-3 500'
    },
    {
       'number': '404-999-9601',
-      'name': 'Britt Spears'
+      'name': 'Britt Spears',
+      'account': '511040-763-4200'
    },
    {
       'number': '229-999-0454',
-      'name': 'Casper Ghost'
+      'name': 'Casper Ghost',
+      'account': '511040-763-4200'
    },
    {
       'number': '229-999-4703',
-      'name': 'Patrick Star'
+      'name': 'Patrick Star',
+      'account': '511040-763-4200'
    },
    {
       'number': '731-999-2755',
-      'name': 'Dave Gerber'
+      'name': 'Dave Gerber',
+      'account': '511040-763-4200'
    },
    {
       'number': '229-999-9122',
-      'name': 'Nina Marina'
+      'name': 'Nina Marina',
+      'account': '511040-763-4200'
    },
    {
       'number': '229-999-7001',
-      'name': 'Mike White'
+      'name': 'Mike White',
+      'account': '511040-763-4200'
    },
    {
       'number': '229-999-7002',
-      'name': 'Marketing Tradeshow'
+      'name': 'Marketing Tradeshow',
+      'account': '511040-763-4200'
    },
    {
       'number': '229-999-7003',
-      'name': 'Shannon Pollack'
+      'name': 'Shannon Pollack',
+      'account': '511040-763-4200'
    },
    {
       'number': '229-999-7004',
-      'name': 'Ben O\'connor'
+      'name': 'Ben O\'connor',
+      'account': '511040-763-6700'
    },
    {
       'number': '229-999-7005',
-      'name': 'Alexa Baran'
+      'name': 'Alexa Baran',
+      'account': '511040-763-6700'
    },
    {
       'number': '229-999-7006',
-      'name': 'Della Gambill'
+      'name': 'Della Gambill',
+      'account': '511040-763-6700'
    },
    {
       'number': '229-999-7007',
@@ -140,11 +167,13 @@ var employeeMapping = [{
    },
    {
       'number': '229-999-7008',
-      'name': 'Chris Clein'
+      'name': 'Chris Clein',
+      'account': '511040-763-6700'
    },
    {
       'number': '229-999-7009',
-      'name': 'Austin Rogers'
+      'name': 'Austin Rogers',
+      'account': '511040-763-6700'
    }
 ];
 
@@ -221,6 +250,7 @@ function randomDate(start, end) {
    return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime())).toISOString().slice(0, 10);
 }
 
+
 function generateTotalCharges(charges) {
    var totalCharges = 0;
    var total = 0;
@@ -230,7 +260,6 @@ function generateTotalCharges(charges) {
    var surcharge = 0;
    var taxes = 0;
    var thirdParty = 0;
-   var total = 0;
    for (var r = 1; r < charges.length; r++) {
       monthly += charges[r].monthly;
       usage += charges[r].usage;
@@ -248,6 +277,12 @@ function generateTotalCharges(charges) {
    taxes = Math.round((taxes + Number.EPSILON) * 100) / 100;
    thirdParty = Math.round((thirdParty + Number.EPSILON) * 100) / 100;
    total = Math.round((total + Number.EPSILON) * 100) / 100;
+   console.log(total.toString().length)
+   if (total.toString().length == 6) {
+      total = total + '0';
+   } else if (total.toString().length == 4) {
+      total = total + '.00';
+   }
    var totalCharges = ('$' + monthly + "," + '$' + usage + "," + '$' + equipment + "," + '$' + surcharge + "," + '$' + taxes + "," + '$' + thirdParty + "," + '$' + total + ",");
 
    return totalCharges;
@@ -416,7 +451,7 @@ function createTable() {
          'total': 'Total Charges'
       }];
 
-      totalItems = generateTotalCharges(charges);
+
 
       var cost_centers = ['A', 'A', 'Subtotal', 'B', 'B', 'Subtotal', 'C', 'C', 'Subtotal', 'D', 'D', 'D', 'Subtotal', 'E', 'E', 'E', 'Subtotal', 'F', 'F', 'Subtotal', 'G', 'G', 'Subtotal', 'Total Charges'];
       for (var r = 0; r < charges.length; r++) {
@@ -451,6 +486,7 @@ function createTable() {
 
    generateCSV(lines, totalItems);
 
+
 }
 
 
@@ -477,35 +513,33 @@ function correct() {
    document.getElementById('result').innerHTML = 'Correct!';
 }
 
-//doesnt work
+
 function checkAccount(accountArr) {
    var result = [];
    //removes blank array elements
-   for (var i = 0; i < accountArr.length; i++){
-      if (accountArr[i] == '')
-      {
-         accountArr.splice(i,1);
+   for (var i = 0; i < accountArr.length; i++) {
+      if (accountArr[i] == '') {
+         accountArr.splice(i, 1);
       }
    }
 
    //account validation
    for (var j = 0; j < accountArr.length; j++) {
-      for (var i = 0; i < accounts.length; i++){
-      if (accounts[i].localeCompare(accountArr[j]) === 0) {
-         result.push(true);
+      for (var i = 0; i < accounts.length; i++) {
+         if (accounts[i].localeCompare(accountArr[j]) === 0) {
+            result.push(true);
+         }
       }
    }
-   }
-   if(result.length != (accountArr.length)){
+   if (result.length != (accountArr.length - 1)) {
       return false;
-   }
-   else{
+   } else {
       return true;
    }
 
 }
 
-function checkDate(dateArr){
+function checkDate(dateArr) {
    var mon = randDate.slice(5, 7);
    var day = randDate.slice(8, 10);
    var year = randDate.slice(0, 4);
@@ -517,34 +551,60 @@ function checkDate(dateArr){
 
    console.log(compareDate);
 
+   //removes blank array elements
+   for (var i = 0; i < dateArr.length; i++) {
+      if (dateArr[i] == '') {
+         dateArr.splice(i, 1);
+      }
+   }
+
    for (var i = 0; i < dateArr.length; i++) {
       if (dateArr[i] != compareDate) {
-            return false;
-      } 
+         return false;
+      }
    }
 
    return true;
 }
 
-function checkAccType(accType){
+function checkAccType(accType) {
    //checks if row 1 = vendor 
    if (accType[0] != 'Vendor') {
-         return false;
-   }
-   else{
-   //checks if row 2+ = Ledger
-   for (i = 1; i < accType.length; i++) {
-      if (accType[i] != 'Ledger') {
-         return false;
-      } 
-   }
+      return false;
+   } else {
 
-   return true;
+      //removes blank array elements
+      for (var i = 1; i < accType.length; i++) {
+         if (accType[i] == '') {
+            accType.splice(i, 1);
+         }
+      }
+      //checks if row 2+ = Ledger
+      for (i = 1; i < accType.length; i++) {
+         if (accType[i] != 'Ledger') {
+            return false;
+         }
+      }
+
+      return true;
+   }
 }
+
+
+function checkCredit(creditArr) {
+   var creditInput = 0;
+   total = totalItems.substring(totalItems.length - 8, totalItems.length - 1);
+   console.log(total);
+   for (var i = 0; i < creditArr.length; i++) {
+      if (creditArr[i].toString().localeCompare(total) == 0) {
+         return true;
+      }
+   }
+   return false;
 }
 
 function checkAnswer() {
-   
+
    var resultArr = [];
 
    var dateArr = spreadsheet.getColumnData(0);
@@ -552,20 +612,30 @@ function checkAnswer() {
    var accountArr = spreadsheet.getColumnData(3);
    var debitArr = spreadsheet.getColumnData(6);
    var creditArr = spreadsheet.getColumnData(7);
-   
+
 
    var dateBool = checkDate(dateArr);
    var accTypeBool = checkAccType(accType);
    var accountBool = checkAccount(accountArr);
 
-   console.log('datebool: ' + dateBool + ' accTypeBool: ' + accTypeBool + 'accountBool: ' + accountBool);
+   var creditBool = checkCredit(creditArr);
 
-   if ((dateBool && accTypeBool && accountBool)){
+   console.log(' datebool: ' + dateBool + ' accTypeBool: ' + accTypeBool + ' accountBool: ' + accountBool + ' creditBool: ' + creditBool);
+
+   if ((dateBool && accTypeBool && accountBool && creditBool)) {
       correct();
-   }
-   else {
+   } else if (!dateBool) {
       document.getElementById('result').style.color = "red";
-      document.getElementById('result').innerHTML = 'Incorrect. Try Again.';
+      document.getElementById('result').innerHTML = 'Incorrect Date. Try Again.';
+   } else if (!accTypeBool) {
+      document.getElementById('result').style.color = "red";
+      document.getElementById('result').innerHTML = 'Incorrect Account Type. Try Again.';
+   } else if (!accountBool) {
+      document.getElementById('result').style.color = "red";
+      document.getElementById('result').innerHTML = 'Incorrect Account. Try Again.';
+   } else if (!creditBool) {
+      document.getElementById('result').style.color = "red";
+      document.getElementById('result').innerHTML = 'Incorrect Credit. Try Again.';
    }
 
 
