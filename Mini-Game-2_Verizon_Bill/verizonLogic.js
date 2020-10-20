@@ -271,14 +271,17 @@ function generateTotalCharges(charges) {
    var surcharge = 0;
    var taxes = 0;
    var thirdParty = 0;
-   for (var r = 1; r < charges.length; r++) {
-      monthly += charges[r].monthly;
-      usage += charges[r].usage;
-      equipment += charges[r].equipment;
-      surcharge += charges[r].surcharge;
-      taxes += charges[r].taxes;
-      thirdParty += charges[r].thirdParty;
-      total += charges[r].total;
+   var cost_centers = ['A', 'A', 'Subtotal', 'B', 'B', 'Subtotal', 'C', 'C', 'Subtotal', 'D', 'D', 'D', 'Subtotal', 'E', 'E', 'E', 'Subtotal', 'F', 'F', 'Subtotal', 'G', 'G', 'Subtotal', 'Total Charges'];
+   for (var r = 0; r < charges.length; r++) {
+      if (cost_centers[r].localeCompare('Subtotal')==0){
+         monthly += charges[r].monthly;
+         usage += charges[r].usage;
+         equipment += charges[r].equipment;
+         surcharge += charges[r].surcharge;
+         taxes += charges[r].taxes;
+         thirdParty += charges[r].thirdParty;
+         total += charges[r].total;
+      }
    }
 
    monthly = Math.round((monthly + Number.EPSILON) * 100) / 100;
@@ -288,7 +291,7 @@ function generateTotalCharges(charges) {
    taxes = Math.round((taxes + Number.EPSILON) * 100) / 100;
    thirdParty = Math.round((thirdParty + Number.EPSILON) * 100) / 100;
    total = Math.round((total + Number.EPSILON) * 100) / 100;
-   console.log(total.toString().length)
+   //console.log(total.toString().length)
    if (total.toString().length == 6) {
       total = total + '0';
    } else if (total.toString().length == 4) {
@@ -551,7 +554,6 @@ function aggregateDebit() {
    for (i = 1; i < lines.length; i++) {
       var empName = lines[i].employee.substring(lines[i].employee.indexOf('/') + 2);
       for (var j = 0; j < employeeMapping.length; j++) {
-
          if (empName.localeCompare(employeeMapping[j].name) == 0) {
             acc = {}
             acc.account = employeeMapping[i].account;
@@ -571,7 +573,7 @@ function checkDebit(debitArr, accountArr) {
    var debitAccount = [];
 
    var result = debitTotals();
-   // console.log(result);
+   //console.log(result);
 
    for (var i = 0; i < debitArr.length; i++) {
       if (debitArr[i] != '') {
@@ -605,8 +607,9 @@ function checkDebit(debitArr, accountArr) {
 function debitTotals() {
    var holder = {};
    var obj = aggregateDebit();
-
+   //console.log(obj);
    obj.forEach(function (d) {
+      console.log(parseFloat(d.total));
       if (holder.hasOwnProperty(d.account)) {
          holder[d.account] = holder[d.account] + Math.round((parseFloat(d.total) + Number.EPSILON) * 100) / 100;
       } else {
@@ -684,7 +687,7 @@ function checkAccType(accType) {
 
 function checkCredit(creditArr) {
    total = totalItems.substring(totalItems.length - 8, totalItems.length - 1);
-   console.log(total);
+   //console.log(total);
    for (var i = 0; i < creditArr.length; i++) {
       if (creditArr[i].toString().localeCompare(total) == 0) {
          return true;
@@ -709,7 +712,7 @@ function checkAnswer() {
    var debitBool = checkDebit(debitArr, accountArr);
    var creditBool = checkCredit(creditArr);
 
-   console.log(' datebool: ' + dateBool + ' accTypeBool: ' + accTypeBool + ' accountBool: ' + accountBool + ' creditBool: ' + creditBool + ' debitBool: ' + debitBool);
+   //console.log(' datebool: ' + dateBool + ' accTypeBool: ' + accTypeBool + ' accountBool: ' + accountBool + ' creditBool: ' + creditBool + ' debitBool: ' + debitBool);
 
    if ((dateBool && accTypeBool && accountBool && creditBool && debitBool)) {
       correct();
