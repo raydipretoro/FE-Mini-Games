@@ -2,7 +2,17 @@ var timerVar;
 var charges = generateCharges();
 var elements = []; //creating array to store each element in an object
 var answer = []; //creating array to store the correct answer
-var combos = [];
+var lines = [{
+   'cost_center': 'Cost Center',
+   'employee': 'Number / User Name',
+   'monthly': 'Monthly Access Charges',
+   'usage': 'Usage Charges',
+   'equipment': 'Equipment Charges',
+   'surcharge': 'VZW Surcharges and Other Charges and Credits',
+   'taxes': 'Taxes Governmental Surcharges and Fees',
+   'thirdParty': 'Third Party Charges (Includes Tax)',
+   'total': 'Total Charges'
+}];
 var totalItems = generateTotalCharges(charges);
 var gameHasStarted = false; //set to false before the game begins 
 var dataGenerated = false;
@@ -84,27 +94,27 @@ var employeeMapping = [{
    {
       'number': '229-999-0177',
       'name': 'Sheldon Howey',
-      'account': '511040-761-3 500'
+      'account': '511040-761-3500'
    },
    {
       'number': '908-999-9052',
       'name': 'Troy Whalen - Ipad',
-      'account': '511040-761-3 500'
+      'account': '511040-761-3500'
    },
    {
       'number': '229-999-1868',
       'name': 'Suzy Q - Ipad',
-      'account': '511040-761-3 500'
+      'account': '511040-761-3500'
    },
    {
       'number': '229-999-7336',
       'name': 'Mike Hollow',
-      'account': '511040-761-3 500'
+      'account': '511040-761-3500'
    },
    {
       'number': '706-999-2618',
       'name': 'Clint Easton',
-      'account': '511040-761-3 500'
+      'account': '511040-761-3500'
    },
    {
       'number': '404-999-9601',
@@ -212,20 +222,21 @@ var spreadsheet = jexcel(document.getElementById('spreadsheet'), {
          width: 180
       },
       {
-         type: 'numeric',
+         type: 'text',
          title: 'Debit',
-         width: 120,
-         decimal: '.'
+         width: 120
+         //decimal: '.'
       },
       {
-         type: 'numeric',
+         type: 'text',
          title: 'Credit',
-         width: 120,
-         decimal: '.'
+         width: 120
+         //decimal: '.'
       },
    ]
 });
 
+var i = 0;
 
 function shuffle(array) {
    var m = array.length,
@@ -439,18 +450,6 @@ function createTable() {
          employees.push(employeeNum + ' / ' + employeeName);
       }
 
-      var lines = [{
-         'cost_center': 'Cost Center',
-         'employee': 'Number / User Name',
-         'monthly': 'Monthly Access Charges',
-         'usage': 'Usage Charges',
-         'equipment': 'Equipment Charges',
-         'surcharge': 'VZW Surcharges and Other Charges and Credits',
-         'taxes': 'Taxes Governmental Surcharges and Fees',
-         'thirdParty': 'Third Party Charges (Includes Tax)',
-         'total': 'Total Charges'
-      }];
-
 
 
       var cost_centers = ['A', 'A', 'Subtotal', 'B', 'B', 'Subtotal', 'C', 'C', 'Subtotal', 'D', 'D', 'D', 'Subtotal', 'E', 'E', 'E', 'Subtotal', 'F', 'F', 'Subtotal', 'G', 'G', 'Subtotal', 'Total Charges'];
@@ -486,9 +485,9 @@ function createTable() {
 
    generateCSV(lines, totalItems);
 
+   return lines;
 
 }
-
 
 
 var totalSeconds = 0;
@@ -516,83 +515,174 @@ function correct() {
 
 function checkAccount(accountArr) {
    var result = [];
+   var counter = 0;
+   var entered = false;
    //removes blank array elements
-   for (var i = 0; i < accountArr.length; i++) {
-      if (accountArr[i] == '') {
-         accountArr.splice(i, 1);
-      }
-   }
+
 
    //account validation
    for (var j = 0; j < accountArr.length; j++) {
+      if (accountArr[j] != '') {
+         counter++;
+      }
       for (var i = 0; i < accounts.length; i++) {
-         if (accounts[i].localeCompare(accountArr[j]) === 0) {
-            result.push(true);
+         if (accountArr[j] != '') {
+
+            if (accounts[i].localeCompare(accountArr[j]) === 0) {
+               entered = true;
+               result.push(true);
+            }
          }
       }
    }
-   if (result.length != (accountArr.length - 1)) {
+   if (accountArr[0] != '') {
+      counter = counter - 1;
+   }
+   if ((result.length != counter) || (!entered)) {
       return false;
    } else {
       return true;
    }
 
 }
+
+function aggregateDebit() {
+   var accArray = [];
+   for (i = 1; i < lines.length; i++) {
+      var empName = lines[i].employee.substring(lines[i].employee.indexOf('/') + 2);
+      for (var j = 0; j < employeeMapping.length; j++) {
+
+         if (empName.localeCompare(employeeMapping[j].name) == 0) {
+            acc = {}
+            acc.account = employeeMapping[i].account;
+            acc.total = lines[i].total.substring(1);
+            accArray.push(acc);
+         }
+      }
+   }
+
+   return accArray;
+}
+
+
+function checkDebit(debitArr, accountArr) {
+
+   var resArray = [];
+   var debitAccount = [];
+
+   var result = debitTotals();
+   // console.log(result);
+
+   for (var i = 0; i < debitArr.length; i++) {
+      if (debitArr[i] != '') {
+         var obj = {};
+         obj.account = accountArr[i];
+         obj.debit = debitArr[i];
+         debitAccount.push(obj);
+      }
+   }
+
+   //  console.log(debitAccount);
+
+
+   if (result.length == debitAccount.length) {
+      for (var j = 0; j < debitAccount.length; j++) {
+         for (var k = 0; k < result.length; k++) {
+            if (((debitAccount[j].account.localeCompare((result[k].account) == 0) && (debitAccount[j].debit.localeCompare(result[k].total) == 0)))) {
+               resArray.push(true);
+            }
+
+         }
+      }
+
+      if (result.length == resArray.length) {
+         return true;
+      }
+   }
+   return false;
+}
+
+function debitTotals() {
+   var holder = {};
+   var obj = aggregateDebit();
+
+   obj.forEach(function (d) {
+      if (holder.hasOwnProperty(d.account)) {
+         holder[d.account] = holder[d.account] + Math.round((parseFloat(d.total) + Number.EPSILON) * 100) / 100;
+      } else {
+         holder[d.account] = Math.round((parseFloat(d.total) + Number.EPSILON) * 100) / 100;
+      }
+   });
+
+   var obj2 = [];
+
+   for (var prop in holder) {
+      obj2.push({
+         account: prop,
+         total: holder[prop].toFixed(2)
+      });
+   }
+
+   return obj2;
+}
+
+
+
 
 function checkDate(dateArr) {
    var mon = randDate.slice(5, 7);
    var day = randDate.slice(8, 10);
    var year = randDate.slice(0, 4);
    var compareDate = mon + '/' + day + '/' + year;
+   var entered = false;
 
    if (compareDate.slice(0, 1) == '0') {
       compareDate = compareDate.slice(1);
    }
 
-   console.log(compareDate);
+   //  console.log(compareDate);
 
-   //removes blank array elements
-   for (var i = 0; i < dateArr.length; i++) {
-      if (dateArr[i] == '') {
-         dateArr.splice(i, 1);
-      }
-   }
 
    for (var i = 0; i < dateArr.length; i++) {
-      if (dateArr[i] != compareDate) {
-         return false;
+      if (dateArr[i] != '') {
+         entered = true;
+         if (dateArr[i].localeCompare(compareDate) !== 0) {
+            return false;
+         }
       }
    }
-
-   return true;
+   if (entered) {
+      return true;
+   } else {
+      return false;
+   }
 }
 
 function checkAccType(accType) {
+   var entered = false;
    //checks if row 1 = vendor 
    if (accType[0] != 'Vendor') {
       return false;
    } else {
 
-      //removes blank array elements
       for (var i = 1; i < accType.length; i++) {
-         if (accType[i] == '') {
-            accType.splice(i, 1);
+         if (accType[i] != '') {
+            entered = true;
+            if (accType[i] != 'Ledger') {
+               return false;
+            }
          }
       }
-      //checks if row 2+ = Ledger
-      for (i = 1; i < accType.length; i++) {
-         if (accType[i] != 'Ledger') {
-            return false;
-         }
+      if (entered) {
+         return true;
+      } else {
+         return false;
       }
-
-      return true;
    }
 }
 
 
 function checkCredit(creditArr) {
-   var creditInput = 0;
    total = totalItems.substring(totalItems.length - 8, totalItems.length - 1);
    console.log(total);
    for (var i = 0; i < creditArr.length; i++) {
@@ -603,6 +693,7 @@ function checkCredit(creditArr) {
    return false;
 }
 
+
 function checkAnswer() {
 
    var resultArr = [];
@@ -612,17 +703,15 @@ function checkAnswer() {
    var accountArr = spreadsheet.getColumnData(3);
    var debitArr = spreadsheet.getColumnData(6);
    var creditArr = spreadsheet.getColumnData(7);
-
-
    var dateBool = checkDate(dateArr);
    var accTypeBool = checkAccType(accType);
    var accountBool = checkAccount(accountArr);
-
+   var debitBool = checkDebit(debitArr, accountArr);
    var creditBool = checkCredit(creditArr);
 
-   console.log(' datebool: ' + dateBool + ' accTypeBool: ' + accTypeBool + ' accountBool: ' + accountBool + ' creditBool: ' + creditBool);
+   console.log(' datebool: ' + dateBool + ' accTypeBool: ' + accTypeBool + ' accountBool: ' + accountBool + ' creditBool: ' + creditBool + ' debitBool: ' + debitBool);
 
-   if ((dateBool && accTypeBool && accountBool && creditBool)) {
+   if ((dateBool && accTypeBool && accountBool && creditBool && debitBool)) {
       correct();
    } else if (!dateBool) {
       document.getElementById('result').style.color = "red";
@@ -636,9 +725,8 @@ function checkAnswer() {
    } else if (!creditBool) {
       document.getElementById('result').style.color = "red";
       document.getElementById('result').innerHTML = 'Incorrect Credit. Try Again.';
+   } else if (!debitBool) {
+      document.getElementById('result').style.color = "red";
+      document.getElementById('result').innerHTML = 'Incorrect Debit/Account Combos. Try Again.';
    }
-
-
-
-
 }
