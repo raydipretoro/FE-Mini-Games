@@ -1,3 +1,19 @@
+/**
+ * This script generates a random CSV of a Verizon Phone Bill.
+ * 
+ * This script also validates that the user input matches the backend calculations.
+ * 
+ * HTML will display 'Correct!' if entire journal entry is correct.
+ * HTML will display an error message hinting at the column with the mistake if incorrect.
+ * 
+ * Created for PwC 
+ * FE Digital Camp
+ * Mini Game 2: Verizon Bill Journal Entry Creation
+ * 
+ * @author Ray DiPretoro <raymond.a.dipretoro@pwc.com>
+ * @version 1.0 10/22/20
+ */
+
 var timerVar;
 var charges = generateCharges();
 var elements = []; //creating array to store each element in an object
@@ -273,7 +289,7 @@ function generateTotalCharges(charges) {
    var thirdParty = 0;
    var cost_centers = ['A', 'A', 'Subtotal', 'B', 'B', 'Subtotal', 'C', 'C', 'Subtotal', 'D', 'D', 'D', 'Subtotal', 'E', 'E', 'E', 'Subtotal', 'F', 'F', 'Subtotal', 'G', 'G', 'Subtotal', 'Total Charges'];
    for (var r = 0; r < charges.length; r++) {
-      if (cost_centers[r].localeCompare('Subtotal')==0){
+      if (cost_centers[r].localeCompare('Subtotal') == 0) {
          monthly += charges[r].monthly;
          usage += charges[r].usage;
          equipment += charges[r].equipment;
@@ -584,7 +600,7 @@ function checkDebit(debitArr, accountArr) {
       }
    }
 
-   //  console.log(debitAccount);
+   //console.log(debitAccount);
 
 
    if (result.length == debitAccount.length) {
@@ -609,7 +625,7 @@ function debitTotals() {
    var obj = aggregateDebit();
    //console.log(obj);
    obj.forEach(function (d) {
-      console.log(parseFloat(d.total));
+      //console.log(parseFloat(d.total));
       if (holder.hasOwnProperty(d.account)) {
          holder[d.account] = holder[d.account] + Math.round((parseFloat(d.total) + Number.EPSILON) * 100) / 100;
       } else {
