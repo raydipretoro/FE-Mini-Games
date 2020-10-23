@@ -11,7 +11,7 @@
  * Mini Game 2: Verizon Bill Journal Entry Creation
  * 
  * @author Ray DiPretoro <raymond.a.dipretoro@pwc.com>
- * @version 1.0 10/22/20
+ * @version 1.1 10/23/20
  */
 
 var timerVar;
@@ -570,7 +570,7 @@ function aggregateDebit() {
    var accArray = [];
    for (i = 0; i < lines.length; i++) {
       var empName = lines[i].employee.substring(lines[i].employee.indexOf('/') + 2);
-      console.log(empName);
+      //console.log(empName);
       for (var j = 0; j < employeeMapping.length; j++) {
          if (empName.localeCompare(employeeMapping[j].name) == 0) {
             acc = {}
@@ -594,10 +594,17 @@ function checkDebit(debitArr, accountArr) {
    //console.log(result);
 
    for (var i = 0; i < debitArr.length; i++) {
+      var pos = debitArr[i].indexOf('.');
       if (debitArr[i] != '') {
          var obj = {};
          obj.account = accountArr[i];
-         obj.debit = debitArr[i];
+         //console.log(debitArr[i].substring(pos));
+         if (debitArr[i].substring(pos).length == 2){
+            obj.debit = debitArr[i] + '0';
+         }
+         else {
+            obj.debit = debitArr[i];
+         }
          debitAccount.push(obj);
       }
    }
@@ -654,14 +661,20 @@ function checkDate(dateArr) {
    var mon = randDate.slice(5, 7);
    var day = randDate.slice(8, 10);
    var year = randDate.slice(0, 4);
+   if (day.slice(0, 1) == '0') {
+      day = day.slice(1);
+   }
+
    var compareDate = mon + '/' + day + '/' + year;
    var entered = false;
+
+
 
    if (compareDate.slice(0, 1) == '0') {
       compareDate = compareDate.slice(1);
    }
 
-   //  console.log(compareDate);
+    //console.log(compareDate);
 
 
    for (var i = 0; i < dateArr.length; i++) {
