@@ -120,17 +120,17 @@ var employeeMapping = [{
    {
       'number': '229-999-1868',
       'name': 'Suzy Q - Ipad',
-      'account': '511040-761-3500'
+      'account': '511040-763-3500'
    },
    {
       'number': '229-999-7336',
       'name': 'Mike Hollow',
-      'account': '511040-761-3500'
+      'account': '511040-763-3500'
    },
    {
       'number': '706-999-2618',
       'name': 'Clint Easton',
-      'account': '511040-761-3500'
+      'account': '511040-763-3500'
    },
    {
       'number': '404-999-9601',
@@ -189,7 +189,8 @@ var employeeMapping = [{
    },
    {
       'number': '229-999-7007',
-      'name': 'Harry Potter'
+      'name': 'Harry Potter',
+      'account': '511040-763-6700'
    },
    {
       'number': '229-999-7008',
@@ -567,12 +568,13 @@ function checkAccount(accountArr) {
 
 function aggregateDebit() {
    var accArray = [];
-   for (i = 1; i < lines.length; i++) {
+   for (i = 0; i < lines.length; i++) {
       var empName = lines[i].employee.substring(lines[i].employee.indexOf('/') + 2);
+      console.log(empName);
       for (var j = 0; j < employeeMapping.length; j++) {
          if (empName.localeCompare(employeeMapping[j].name) == 0) {
             acc = {}
-            acc.account = employeeMapping[i].account;
+            acc.account = employeeMapping[j].account;
             acc.total = lines[i].total.substring(1);
             accArray.push(acc);
          }
@@ -627,7 +629,7 @@ function debitTotals() {
    obj.forEach(function (d) {
       //console.log(parseFloat(d.total));
       if (holder.hasOwnProperty(d.account)) {
-         holder[d.account] = holder[d.account] + Math.round((parseFloat(d.total) + Number.EPSILON) * 100) / 100;
+         holder[d.account] = parseFloat(holder[d.account]) + Math.round((parseFloat(d.total) + Number.EPSILON) * 100) / 100;
       } else {
          holder[d.account] = Math.round((parseFloat(d.total) + Number.EPSILON) * 100) / 100;
       }
@@ -705,9 +707,18 @@ function checkCredit(creditArr) {
    total = totalItems.substring(totalItems.length - 8, totalItems.length - 1);
    //console.log(total);
    for (var i = 0; i < creditArr.length; i++) {
-      if (creditArr[i].toString().localeCompare(total) == 0) {
-         return true;
+      if (creditArr[i].includes('$')){
+         if (creditArr[i].toString().substring(1).localeCompare(total) === 0) {
+            return true;
+         }
       }
+      else {
+         if (creditArr[i].toString().localeCompare(total) === 0) {
+            return true;
+         }
+      }
+
+      
    }
    return false;
 }
@@ -741,11 +752,11 @@ function checkAnswer() {
    } else if (!accountBool) {
       document.getElementById('result').style.color = "red";
       document.getElementById('result').innerHTML = 'Incorrect Account. Try Again.';
+   }  else if (!debitBool) {
+      document.getElementById('result').style.color = "red";
+      document.getElementById('result').innerHTML = 'Incorrect Debit/Account Combos. Try Again.';
    } else if (!creditBool) {
       document.getElementById('result').style.color = "red";
       document.getElementById('result').innerHTML = 'Incorrect Credit. Try Again.';
-   } else if (!debitBool) {
-      document.getElementById('result').style.color = "red";
-      document.getElementById('result').innerHTML = 'Incorrect Debit/Account Combos. Try Again.';
    }
 }
